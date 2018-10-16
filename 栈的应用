@@ -1,0 +1,14 @@
+//十进制转八进制
+//createStack(),pop(s),push(s,item),根据浙大写的。
+void conversion(){
+  S = createStack();
+  scanf("%d",N);
+  while(N){
+    push(S,N%8)；
+    N = N/8；
+  }
+  while(!isEmpty(S)){
+    e = pop(S);
+    printf("%d",e);
+  }
+}
