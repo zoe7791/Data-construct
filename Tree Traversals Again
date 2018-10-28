@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#define MAX 30
+
+struct SNode
+{
+    int data;
+    struct SNode *next;
+};
+
+typedef struct SNode *Stack;
+
+int N;
+int pre[MAX],in[MAX],post[MAX];
+
+Stack CreateStack();
+int Pop(Stack Ptr);
+void Push(Stack Ptr,int x);
+void Resolve(int preL,int inL,int postL,int N);
+int main()
+{
+    //freopen("in.txt", "r", stdin);
+    Stack s;
+    char str[5];
+    int i,j = 0,x,k = 0;
+    s = CreateStack();
+    scanf("%d",&N);
+    for(i=0;i < 2*N; i++)
+    {
+        scanf("%s",str);
+        if(strcmp(str,"Push") == 0)
+        {
+            scanf("%d",&x);
+            Push(s,x);
+            pre[j] = x;
+            j++;
+        }else
+        {
+            in[k] = Pop(s);
+            k++;
+        }
+    }
+
+    Resolve(0,0,0,N);
+    for(i = 0; i < N-1; i++)
+    {
+        printf("%d ",post[i]);
+    }
+    printf("%d",post[N-1]);
+    printf("\n");
+
+    return 0;
+}
+
+Stack CreateStack()
+{
+    Stack s;
+    s = (struct SNode *)malloc(sizeof(struct SNode));
+    s->next = NULL;
+    return s;
+}
+
+int Pop(Stack Ptr)
+{
+    Stack Tmp;
+    int Toptmp;
+    if(Ptr->next == NULL)
+    {
+        return -1;
+    }else
+    {
+        Tmp = Ptr->next;
+        Ptr->next = Tmp->next;
+        Toptmp = Tmp->data;
+        free(Tmp);
+        return Toptmp;
+    }
+}
+
+void Push(Stack Ptr,int x)
+{
+    struct SNode *Tmpcell;
+    Tmpcell = (struct SNode *)malloc(sizeof(struct SNode));
+    Tmpcell->data = x;
+    Tmpcell->next = Ptr->next;
+    Ptr->next = Tmpcell;
+}
+
+void Resolve(int preL,int inL,int postL,int N)
+{
+    int i,L,R,root;
+    if(N == 0)
+        return;
+    if(N == 1)
+    {
+        post[postL] = pre[preL];
+        return ;
+    }
+    root = pre[preL];
+    post[postL+N-1] = root;
+    for(i = 0; i < N; i++)
+    {
+        if(in[inL+i] == pre[preL])
+            break;
+    }
+    L = i;
+    R = N - L - 1;
+    Resolve(preL+1,inL,postL,L);
+    Resolve(preL+L+1,inL+L+1,postL+L,R);
+}
